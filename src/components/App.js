@@ -39,7 +39,7 @@ function App() {
   }
 
   return (
-    <body className="body">
+    <div className="body">
       <div className="mainpage">
         <Header />
         <Main
@@ -55,7 +55,7 @@ function App() {
         />
         <Footer />
       </div>
-    </body>
+    </div>
   );
 }
 
