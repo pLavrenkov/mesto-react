@@ -1,6 +1,5 @@
 function PopupWithForm({title, name, children, button, isOpen, onClose}) {
     const popupElement = document.querySelector(`#pop-up-${name}`);
-    console.log(onClose);
     
     if (isOpen) {
         popupElement.classList.add('pop-up_opened')

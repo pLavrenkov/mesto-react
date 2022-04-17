@@ -1,8 +1,33 @@
+import React from 'react';
+import ReactDOM from 'react-dom/client';
 import avatarPath from '../images/avatar.jpg';
 import PopupWithForm from './PopupWithForm';
 import ImagePopup from './ImagePopup';
+import Card from './Card';
+import { api } from '../utils/Api';
 
-function Main({onEditProfile, onAddPlace, onEditAvatar, isOpenProfile, isOpenAvatar, isOpenPlace, closeAllPopups}) {
+function Main({ onEditProfile, onAddPlace, onEditAvatar, isOpenProfile, isOpenAvatar, isOpenPlace, closeAllPopups, card, onCardClick }) {
+    const [userId, setUserId] = React.useState();
+
+    React.useEffect(() => {
+        api.getUserInfo()
+            .then((userInfo) => {
+                document.querySelector('.profile__title').textContent = userInfo.name;
+                document.querySelector('.profile__subtitle').textContent = userInfo.about;
+                document.querySelector('.profile__avatar').src = userInfo.avatar;
+                setUserId(userInfo._id);
+            })
+    }, [])
+
+    const [cards, setCards] = React.useState([]);
+
+    React.useEffect(() => {
+        api.getCards()
+            .then((arrCards) => {
+                setCards(arrCards)
+            })
+    }, [])
+
     return (
         <main className="content">
             <section className="profile">
@@ -20,7 +45,11 @@ function Main({onEditProfile, onAddPlace, onEditAvatar, isOpenProfile, isOpenAva
                 </div>
             </section>
             <section className="elements">
-                <ul className="element-list"></ul>
+                <ul className="element-list">
+                    {cards.map(item =>
+                        <Card key={item._id} cardId={item._id} link={item.link} name={item.name} likes={item.likes.length} userId={userId} cardOwnerId={item.owner._id} onCardClick={onCardClick} />
+                    )}
+                </ul>
             </section>
             <PopupWithForm name={"profile"} title={"Редактировать профиль"} button={"Сохранить"} isOpen={isOpenProfile} onClose={closeAllPopups}>
                 <input type="text" className="pop-up-form__field" placeholder="Введите другое имя" id="pop-up-form-profile-title"
@@ -51,6 +80,7 @@ function Main({onEditProfile, onAddPlace, onEditAvatar, isOpenProfile, isOpenAva
                     id="pop-up-form-newcard-added-info" name="info" required autoComplete="url" />
                 <span className="pop-up-form__input-error pop-up-form-newcard-added-info-error"></span>
             </PopupWithForm>
+            <ImagePopup onClose={closeAllPopups} cardAttributes={card} />
         </main>
     )
 }
