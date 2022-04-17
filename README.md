@@ -40,4 +40,4 @@
 
 Максимальная ширина экрана: **1280px**.
 
-Проект размещен в **GitHab Pages** [здесь](https://plavrenkov.github.io/mesto/).
+Проект размещен в **GitHab Pages** [здесь](https://plavrenkov.github.io/mesto-react/).
