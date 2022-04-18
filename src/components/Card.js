@@ -3,12 +3,6 @@ import ReactDOM from 'react-dom/client';
 
 function Card({ link, name, likes, cardId, userId, cardOwnerId, onCardClick }) {
 
-    React.useEffect(() => {
-        if (cardOwnerId === userId) {
-            document.querySelector('.element__bin-button').classList.remove('element__bin-button_display_none');
-        }
-    }, [])
-
     function handleClick() {
         onCardClick(name, link);
     }
@@ -25,7 +19,7 @@ function Card({ link, name, likes, cardId, userId, cardOwnerId, onCardClick }) {
                     </div>
                 </figcaption>
             </figure>
-            <button type="button" className="element__bin-button element__bin-button_display_none"></button>
+            <button type="button" className={`element__bin-button ${cardOwnerId !== userId && 'element__bin-button_display_none'}`}></button>
         </li>
     )
 }
