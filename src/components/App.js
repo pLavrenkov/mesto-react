@@ -16,13 +16,7 @@ function App() {
   React.useEffect(() => {
     api.getUserInfo()
       .then((userInfo) => {
-        setCurrentUser(userInfo
-          /*currentUser.name = userInfo.name,
-          currentUser.about = userInfo.about,
-          currentUser.avatar = userInfo.avatar,
-          currentUser.id = userInfo._id*/
-        );
-        console.log(currentUser.id);
+        setCurrentUser(userInfo);
       })
       .catch((err) => {
         alert(`Возникла ошибка ${err}`);

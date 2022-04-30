@@ -8,21 +8,8 @@ import { api } from '../utils/Api';
 import { CurrentUserContext } from '../contexts/CurrentUserContext';
 
 function Main({ onEditProfile, onAddPlace, onEditAvatar, isOpenProfile, isOpenAvatar, isOpenPlace, closeAllPopups, card, onCardClick }) {
-    const [userId, setUserId] = React.useState();
+    //const [userId, setUserId] = React.useState();
     const currentUser = React.useContext(CurrentUserContext);
-
-    /*React.useEffect(() => {
-        api.getUserInfo()
-            .then((userInfo) => {
-                //console.log(currentUser);
-                //document.querySelector('.profile__title').textContent = userInfo.name;
-                //document.querySelector('.profile__subtitle').textContent = userInfo.about;
-                //document.querySelector('.profile__avatar').src = userInfo.avatar;
-                //setUserId(userInfo._id);
-            })
-    }, [])*/
-    console.log(currentUser);
-
     const [cards, setCards] = React.useState([]);
 
     React.useEffect(() => {
@@ -31,6 +18,24 @@ function Main({ onEditProfile, onAddPlace, onEditAvatar, isOpenProfile, isOpenAv
                 setCards(arrCards)
             })
     }, [])
+
+    function handleCardLike(card) {
+        const isLiked = card.likes.some(like => like._id === currentUser._id);
+        api.changeLikeCardStatus(card._id, isLiked)
+            .then((newCard) => {
+                setCards((state) =>
+                    state.map((c) => c._id === card._id ? newCard : c)
+                );
+            })
+    }
+
+    function handleCardDelete(card) {
+        api.deleteCard(card._id)
+            .then((newCard) => {
+                console.log(newCard);
+                setCards((state) => state.filter((c) => c._id !== card._id ? true : false));
+            });
+    }
 
     return (
         <main className="content">
@@ -51,7 +56,18 @@ function Main({ onEditProfile, onAddPlace, onEditAvatar, isOpenProfile, isOpenAv
             <section className="elements">
                 <ul className="element-list">
                     {cards.map(item =>
-                        <Card key={item._id} cardId={item._id} link={item.link} name={item.name} likes={item.likes.length} likesArr={item.likes} userId={userId} cardOwnerId={item.owner._id} onCardClick={onCardClick} />
+                        <Card
+                            key={item._id}
+                            card={item}
+                            cardId={item._id}
+                            link={item.link} name={item.name}
+                            //likes={item.likes.length}
+                            likesArr={item.likes}
+                            //cardOwnerId={item.owner._id}
+                            onCardClick={onCardClick}
+                            onCardLike={handleCardLike}
+                            onCardDelete={handleCardDelete}
+                        />
                     )}
                 </ul>
             </section>
