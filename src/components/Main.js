@@ -5,19 +5,23 @@ import PopupWithForm from './PopupWithForm';
 import ImagePopup from './ImagePopup';
 import Card from './Card';
 import { api } from '../utils/Api';
+import { CurrentUserContext } from '../contexts/CurrentUserContext';
 
 function Main({ onEditProfile, onAddPlace, onEditAvatar, isOpenProfile, isOpenAvatar, isOpenPlace, closeAllPopups, card, onCardClick }) {
     const [userId, setUserId] = React.useState();
+    const currentUser = React.useContext(CurrentUserContext);
 
-    React.useEffect(() => {
+    /*React.useEffect(() => {
         api.getUserInfo()
             .then((userInfo) => {
-                document.querySelector('.profile__title').textContent = userInfo.name;
-                document.querySelector('.profile__subtitle').textContent = userInfo.about;
-                document.querySelector('.profile__avatar').src = userInfo.avatar;
-                setUserId(userInfo._id);
+                //console.log(currentUser);
+                //document.querySelector('.profile__title').textContent = userInfo.name;
+                //document.querySelector('.profile__subtitle').textContent = userInfo.about;
+                //document.querySelector('.profile__avatar').src = userInfo.avatar;
+                //setUserId(userInfo._id);
             })
-    }, [])
+    }, [])*/
+    console.log(currentUser);
 
     const [cards, setCards] = React.useState([]);
 
@@ -33,12 +37,12 @@ function Main({ onEditProfile, onAddPlace, onEditAvatar, isOpenProfile, isOpenAv
             <section className="profile">
                 <div className="profile__content">
                     <div className="profile__avatar-container">
-                        <img className="profile__avatar" src={avatarPath} alt="Аватар" />
+                        <img className="profile__avatar" src={currentUser.avatar} alt="Аватар" />
                         <button type="button" className="profile__avatar-button" onClick={onEditAvatar}></button>
                     </div>
                     <div className="profile__info">
-                        <h1 className="profile__title">Жак-Ив Кусто</h1>
-                        <p className="profile__subtitle">Исследователь океана</p>
+                        <h1 className="profile__title">{currentUser.name}</h1>
+                        <p className="profile__subtitle">{currentUser.about}</p>
                         <button type="button" className="profile__edit-button" onClick={onEditProfile}></button>
                     </div>
                     <button type="button" className="profile__add-button" onClick={onAddPlace}></button>
@@ -47,7 +51,7 @@ function Main({ onEditProfile, onAddPlace, onEditAvatar, isOpenProfile, isOpenAv
             <section className="elements">
                 <ul className="element-list">
                     {cards.map(item =>
-                        <Card key={item._id} cardId={item._id} link={item.link} name={item.name} likes={item.likes.length} userId={userId} cardOwnerId={item.owner._id} onCardClick={onCardClick} />
+                        <Card key={item._id} cardId={item._id} link={item.link} name={item.name} likes={item.likes.length} likesArr={item.likes} userId={userId} cardOwnerId={item.owner._id} onCardClick={onCardClick} />
                     )}
                 </ul>
             </section>

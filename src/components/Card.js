@@ -1,13 +1,16 @@
 import React from "react";
 import ReactDOM from 'react-dom/client';
+import { CurrentUserContext } from '../contexts/CurrentUserContext'
 
-function Card({ link, name, likes, cardId, userId, cardOwnerId, onCardClick }) {
+function Card({ link, name, likes, likesArr, cardId, userId, cardOwnerId, onCardClick }) {
+    const currentUser = React.useContext(CurrentUserContext);
+    
+    const isOwnCard = (cardOwnerId === currentUser._id);
+    const cardDeleteButtonClass = (isOwnCard ? "element__bin-button" : "element__bin-button element__bin-button_display_none");
+    console.log(likes);
 
-    React.useEffect(() => {
-        if (cardOwnerId === userId) {
-            document.querySelector('.element__bin-button').classList.remove('element__bin-button_display_none');
-        }
-    }, [])
+    const isLiked = (likesArr.some(like => like._id === currentUser._id));
+    const cardLikeButtonClassName = (isLiked ? "element__like element__like_active" : "element__like");
 
     function handleClick() {
         onCardClick(name, link);
@@ -20,12 +23,12 @@ function Card({ link, name, likes, cardId, userId, cardOwnerId, onCardClick }) {
                 <figcaption className="element__capture">
                     <h2 className="element__title">{name}</h2>
                     <div className="element__like-block">
-                        <button type="button" className="element__like"></button>
+                        <button type="button" className={cardLikeButtonClassName}></button>
                         <span className="element__likes">{likes}</span>
                     </div>
                 </figcaption>
             </figure>
-            <button type="button" className="element__bin-button element__bin-button_display_none"></button>
+            <button type="button" className={cardDeleteButtonClass}></button>
         </li>
     )
 }
