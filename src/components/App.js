@@ -11,6 +11,7 @@ function App() {
   const [isEditProfilePopupOpen, setIsEditProfilePopupOpen] = React.useState(false);
   const [isAddPlacePopupOpen, setIsAddPlacePopupOpen] = React.useState(false);
   const [isEditAvatarPopupOpen, setIsEditAvatarPopupOpen] = React.useState(false);
+  const [isImagePopupOpen, setIsImagePopupOpen] = React.useState(false);
   const [selectedCard, setSelectedCard] = React.useState();
 
   React.useEffect(() => {
@@ -41,28 +42,42 @@ function App() {
       link: link
     }
     setSelectedCard(card);
+    setIsImagePopupOpen(true);
+  }
+
+  function handleUpdateUser(name, about) {
+    api.patchUserInfo(name, about)
+      .then((newUserInfo) => {
+        setCurrentUser(newUserInfo);
+      })
+      .catch((err) => {
+        alert(`Не загрузились данные пользователя. Ошибка ${err}`);
+      });
+    closeAllPopups();
   }
 
   function closeAllPopups() {
     setIsAddPlacePopupOpen(false);
     setIsEditAvatarPopupOpen(false);
     setIsEditProfilePopupOpen(false);
+    setIsImagePopupOpen(false);
     setSelectedCard('');
-    document.querySelector('.pop-up_opened').classList.remove('pop-up_opened');
   }
 
   return (
-    <body className="body">
+    <div className="body">
       <div className="mainpage">
         <CurrentUserContext.Provider value={currentUser}>
           <Header />
           <Main
             onEditProfile={handleEditProfileClick}
+            onUpdateUser={handleUpdateUser}
             isOpenProfile={isEditProfilePopupOpen}
             onAddPlace={handleAddPlaceClick}
             isOpenPlace={isAddPlacePopupOpen}
             onEditAvatar={handleEditAvatarClick}
             isOpenAvatar={isEditAvatarPopupOpen}
+            isOpenImage={isImagePopupOpen}
             closeAllPopups={closeAllPopups}
             onCardClick={handleCardClick}
             card={selectedCard}
@@ -70,7 +85,7 @@ function App() {
           <Footer />
         </CurrentUserContext.Provider>
       </div>
-    </body>
+    </div>
   );
 }
 

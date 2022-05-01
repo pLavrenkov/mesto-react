@@ -23,7 +23,6 @@ function Card({ card, link, name, likes, likesArr, cardOwnerId, onCardClick, onC
         onCardDelete(card);
     }
 
-
     return (
         <li className="element">
             <figure className="element__picture">
