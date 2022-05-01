@@ -2,13 +2,14 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import avatarPath from '../images/avatar.jpg';
 import EditProfilePopup from './EditProfilePopup';
+import EditAvatarPopup from './EditAvatarPopup';
 import PopupWithForm from './PopupWithForm';
 import ImagePopup from './ImagePopup';
 import Card from './Card';
 import { api } from '../utils/Api';
 import { CurrentUserContext } from '../contexts/CurrentUserContext';
 
-function Main({ onEditProfile, onAddPlace, onEditAvatar, isOpenProfile, isOpenAvatar, isOpenPlace, closeAllPopups, card, onCardClick, onUpdateUser, isOpenImage }) {
+function Main({ onEditProfile, onAddPlace, onEditAvatar, isOpenProfile, isOpenAvatar, isOpenPlace, closeAllPopups, card, onCardClick, onUpdateUser, isOpenImage, onUpdateAvatar }) {
     const currentUser = React.useContext(CurrentUserContext);
     const [cards, setCards] = React.useState([]);
 
@@ -70,11 +71,12 @@ function Main({ onEditProfile, onAddPlace, onEditAvatar, isOpenProfile, isOpenAv
                 </ul>
             </section>
             <EditProfilePopup isOpen={isOpenProfile} onClose={closeAllPopups} onUpdateUser={onUpdateUser} />
-            <PopupWithForm name={"avatar-edit"} title={"Обновить аватар"} button={"Сохранить"} isOpen={isOpenAvatar} onClose={closeAllPopups}>
+            <EditAvatarPopup isOpen={isOpenAvatar} onClose={closeAllPopups} onUpdateAvatar={onUpdateAvatar} />
+           {/* <PopupWithForm name={"avatar-edit"} title={"Обновить аватар"} button={"Сохранить"} isOpen={isOpenAvatar} onClose={closeAllPopups}>
                 <input type="url" className="pop-up-form__field" placeholder="Ссылка на картинку" id="pop-up-form-avatar-url"
                     name="info" required autoComplete="url" />
                 <span className="pop-up-form__input-error pop-up-form-avatar-url-error"></span>
-            </PopupWithForm>
+                    </PopupWithForm>*/}
             <PopupWithForm name={"newcard"} title={"Новое место"} button={"Сохранить"} isOpen={isOpenPlace} onClose={closeAllPopups}>
                 <input type="text" className="pop-up-form__field" placeholder="Название" id="pop-up-form-newcard-title"
                     name="title" required minLength="2" maxLength="30" autoComplete="off" />

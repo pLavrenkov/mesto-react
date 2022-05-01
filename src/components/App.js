@@ -20,7 +20,7 @@ function App() {
         setCurrentUser(userInfo);
       })
       .catch((err) => {
-        alert(`Возникла ошибка ${err}`);
+        alert(`Возникла ошибка при загрузке данных пользователя ${err}`);
       })
   }, [])
 
@@ -56,6 +56,17 @@ function App() {
     closeAllPopups();
   }
 
+  function handleUpdateAvatar(avatar) {
+    api.patchAvatar(avatar)
+      .then((newAvatar) => {
+        setCurrentUser(newAvatar);
+      })
+      .catch((err) => {
+        alert(`Не удалось загрузить аватар. Ошибка ${err}`);
+      });
+    closeAllPopups();
+  }
+
   function closeAllPopups() {
     setIsAddPlacePopupOpen(false);
     setIsEditAvatarPopupOpen(false);
@@ -72,6 +83,7 @@ function App() {
           <Main
             onEditProfile={handleEditProfileClick}
             onUpdateUser={handleUpdateUser}
+            onUpdateAvatar={handleUpdateAvatar}
             isOpenProfile={isEditProfilePopupOpen}
             onAddPlace={handleAddPlaceClick}
             isOpenPlace={isAddPlacePopupOpen}
