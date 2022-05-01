@@ -1,7 +1,18 @@
-function ImagePopup({ onClose, cardAttributes }) {
+function ImagePopup({ onClose, cardAttributes, isOpen }) {
+    const cardData = {
+        name: '',
+        link: ''
+    }
+
+    if (cardAttributes) {
+        cardData.name = cardAttributes.name;
+        cardData.link = cardAttributes.link
+    }
+
+    const imageClassList = (isOpen ? "pop-up pop-up_opened" : "pop-up");
 
     return (
-        <section className={cardAttributes !== null ? "pop-up pop-up_opened" : "pop-up"} id="pop-up-image-view">
+        <section className={imageClassList} id="pop-up-image-view">
             <div className="pop-up__container">
                 <button type="button" className="pop-up__button-close" onClick={onClose} ></button>
                 <figure className="pop-up-picture">

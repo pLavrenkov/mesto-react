@@ -1,16 +1,27 @@
 import React from 'react';
-import ReactDOM from 'react-dom/client';
 import Header from "./Header";
 import Main from "./Main";
 import Footer from "./Footer";
-import PopupWithForm from './PopupWithForm';
-import ImagePopup from './ImagePopup';
+import { CurrentUserContext, defaultUser } from '../contexts/CurrentUserContext';
+import { api } from '../utils/Api';
 
 function App() {
+  const [currentUser, setCurrentUser] = React.useState(defaultUser);
   const [isEditProfilePopupOpen, setIsEditProfilePopupOpen] = React.useState(false);
   const [isAddPlacePopupOpen, setIsAddPlacePopupOpen] = React.useState(false);
   const [isEditAvatarPopupOpen, setIsEditAvatarPopupOpen] = React.useState(false);
-  const [selectedCard, setSelectedCard] = React.useState(null);
+  const [isImagePopupOpen, setIsImagePopupOpen] = React.useState(false);
+  const [selectedCard, setSelectedCard] = React.useState();
+
+  React.useEffect(() => {
+    api.getUserInfo()
+      .then((userInfo) => {
+        setCurrentUser(userInfo);
+      })
+      .catch((err) => {
+        alert(`Возникла ошибка при загрузке данных пользователя ${err}`);
+      })
+  }, [])
 
   function handleEditAvatarClick() {
     setIsEditAvatarPopupOpen(true);
@@ -30,50 +41,104 @@ function App() {
       link: link
     }
     setSelectedCard(card);
+    setIsImagePopupOpen(true);
+  }
+
+  function handleUpdateUser(name, about) {
+    api.patchUserInfo(name, about)
+      .then((newUserInfo) => {
+        setCurrentUser(newUserInfo);
+      })
+      .catch((err) => {
+        alert(`Не загрузились данные пользователя. Ошибка ${err}`);
+      });
+    closeAllPopups();
+  }
+
+  function handleUpdateAvatar(avatar) {
+    api.patchAvatar(avatar)
+      .then((newAvatar) => {
+        setCurrentUser(newAvatar);
+      })
+      .catch((err) => {
+        alert(`Не удалось загрузить аватар. Ошибка ${err}`);
+      });
+    closeAllPopups();
+  }
+
+  const [cards, setCards] = React.useState([]);
+
+  React.useEffect(() => {
+    api.getCards()
+      .then((arrCards) => {
+        setCards(arrCards)
+      })
+      .catch((err) => {
+        alert(`Карточки не загрузились. Ошибка ${err}`)
+      })
+  }, [])
+
+  function handleCardLike(card) {
+    const isLiked = card.likes.some(like => like._id === currentUser._id);
+    api.changeLikeCardStatus(card._id, isLiked)
+      .then((newCard) => {
+        setCards((state) =>
+          state.map((c) => c._id === card._id ? newCard : c)
+        );
+      })
+  }
+
+  function handleCardDelete(card) {
+    api.deleteCard(card._id)
+      .then((newCard) => {
+        console.log(newCard);
+        setCards((state) => state.filter((c) => c._id !== card._id ? true : false));
+      });
+  }
+
+  function handleAddPlaceSubmit(name, link) {
+    api.putNewCard(name, link)
+      .then((newCard) => {
+        setCards([newCard, ...cards]);
+      })
+      .catch((err) => {
+        alert(`Не удалось загрузить катрочку. Ошибка ${err}`)
+      })
   }
 
   function closeAllPopups() {
     setIsAddPlacePopupOpen(false);
     setIsEditAvatarPopupOpen(false);
     setIsEditProfilePopupOpen(false);
-    setSelectedCard(null);
+    setIsImagePopupOpen(false);
+    setSelectedCard('');
   }
 
   return (
     <div className="body">
       <div className="mainpage">
-        <Header />
-        <Main
-          onEditProfile={handleEditProfileClick}
-          onAddPlace={handleAddPlaceClick}
-          onEditAvatar={handleEditAvatarClick}
-          closeAllPopups={closeAllPopups}
-          onCardClick={handleCardClick}
-        />
-        <Footer />
-        <PopupWithForm name={"profile"} title={"Редактировать профиль"} button={"Сохранить"} isOpen={isEditProfilePopupOpen} onClose={closeAllPopups}>
-          <input type="text" className="pop-up-form__field" placeholder="Введите другое имя" id="pop-up-form-profile-title"
-            name="title" required minLength="2" maxLength="40" autoComplete="name" />
-          <span className="pop-up-form__input-error pop-up-form-profile-title-error"></span>
-          <input type="text" className="pop-up-form__field" placeholder="Введите занятие" id="pop-up-form-profile-added-info"
-            name="info" required minLength="2" maxLength="200" autoComplete="off" />
-          <span className="pop-up-form__input-error pop-up-form-profile-added-info-error"></span>
-        </PopupWithForm>
-        <PopupWithForm name={"avatar-edit"} title={"Обновить аватар"} button={"Сохранить"} isOpen={isEditAvatarPopupOpen} onClose={closeAllPopups}>
-          <input type="url" className="pop-up-form__field" placeholder="Ссылка на картинку" id="pop-up-form-avatar-url"
-            name="info" required autoComplete="url" />
-          <span className="pop-up-form__input-error pop-up-form-avatar-url-error"></span>
-        </PopupWithForm>
-        <PopupWithForm name={"newcard"} title={"Новое место"} button={"Сохранить"} isOpen={isAddPlacePopupOpen} onClose={closeAllPopups}>
-          <input type="text" className="pop-up-form__field" placeholder="Название" id="pop-up-form-newcard-title"
-            name="title" required minLength="2" maxLength="30" autoComplete="off" />
-          <span className="pop-up-form__input-error pop-up-form-newcard-title-error"></span>
-          <input type="url" className="pop-up-form__field" placeholder="Ссылка на картинку"
-            id="pop-up-form-newcard-added-info" name="info" required autoComplete="url" />
-          <span className="pop-up-form__input-error pop-up-form-newcard-added-info-error"></span>
-        </PopupWithForm>
-        <PopupWithForm name={"deletecard"} title={"Вы уверены?"} button={"Да"} onClose={closeAllPopups} />
-        <ImagePopup onClose={closeAllPopups} cardAttributes={selectedCard} />
+        <CurrentUserContext.Provider value={currentUser}>
+          <Header />
+          <Main
+            onEditProfile={handleEditProfileClick}
+            onUpdateUser={handleUpdateUser}
+            onUpdateAvatar={handleUpdateAvatar}
+            isOpenProfile={isEditProfilePopupOpen}
+            onAddPlace={handleAddPlaceClick}
+            isOpenPlace={isAddPlacePopupOpen}
+            onEditAvatar={handleEditAvatarClick}
+            isOpenAvatar={isEditAvatarPopupOpen}
+            isOpenImage={isImagePopupOpen}
+            closeAllPopups={closeAllPopups}
+            onCardClick={handleCardClick}
+            card={selectedCard}
+            cards={cards}
+            onCardLike={handleCardLike}
+            onCardDelete={handleCardDelete}
+            newCardAdd={handleAddPlaceSubmit}
+          />
+          <Footer />
+        </CurrentUserContext.Provider>
       </div>
     </div>
   );
