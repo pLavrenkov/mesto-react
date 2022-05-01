@@ -1,5 +1,4 @@
 import React from 'react';
-import ReactDOM from 'react-dom/client';
 import Header from "./Header";
 import Main from "./Main";
 import Footer from "./Footer";
@@ -67,6 +66,46 @@ function App() {
     closeAllPopups();
   }
 
+  const [cards, setCards] = React.useState([]);
+
+  React.useEffect(() => {
+    api.getCards()
+      .then((arrCards) => {
+        setCards(arrCards)
+      })
+      .catch((err) => {
+        alert(`Карточки не загрузились. Ошибка ${err}`)
+      })
+  }, [])
+
+  function handleCardLike(card) {
+    const isLiked = card.likes.some(like => like._id === currentUser._id);
+    api.changeLikeCardStatus(card._id, isLiked)
+      .then((newCard) => {
+        setCards((state) =>
+          state.map((c) => c._id === card._id ? newCard : c)
+        );
+      })
+  }
+
+  function handleCardDelete(card) {
+    api.deleteCard(card._id)
+      .then((newCard) => {
+        console.log(newCard);
+        setCards((state) => state.filter((c) => c._id !== card._id ? true : false));
+      });
+  }
+
+  function handleAddPlaceSubmit(name, link) {
+    api.putNewCard(name, link)
+      .then((newCard) => {
+        setCards([newCard, ...cards]);
+      })
+      .catch((err) => {
+        alert(`Не удалось загрузить катрочку. Ошибка ${err}`)
+      })
+  }
+
   function closeAllPopups() {
     setIsAddPlacePopupOpen(false);
     setIsEditAvatarPopupOpen(false);
@@ -93,6 +132,10 @@ function App() {
             closeAllPopups={closeAllPopups}
             onCardClick={handleCardClick}
             card={selectedCard}
+            cards={cards}
+            onCardLike={handleCardLike}
+            onCardDelete={handleCardDelete}
+            newCardAdd={handleAddPlaceSubmit}
           />
           <Footer />
         </CurrentUserContext.Provider>
