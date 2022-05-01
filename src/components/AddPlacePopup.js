@@ -1,7 +1,7 @@
 import React from "react";
 import PopupWithForm from "./PopupWithForm";
 
-function AddPlacePopup({isOpen, onClose, newCardAdd}) {
+function AddPlacePopup({ isOpen, onClose, newCardAdd }) {
     const [name, setName] = React.useState('');
     const [link, setLink] = React.useState('');
 
@@ -13,16 +13,20 @@ function AddPlacePopup({isOpen, onClose, newCardAdd}) {
         setLink(event.target.value);
     }
 
-    function handleSubmit(event) {
-        event.preventDefault();
-        newCardAdd(name, link);
+    function onClosePopupAddPlace() {
         onClose();
         setName('');
         setLink('');
     }
 
+    function handleSubmit(event) {
+        event.preventDefault();
+        newCardAdd(name, link);
+        onClosePopupAddPlace();
+    }
+
     return (
-        <PopupWithForm name={"newcard"} title={"Новое место"} button={"Сохранить"} isOpen={isOpen} onClose={onClose} onSubmit={handleSubmit}>
+        <PopupWithForm name={"newcard"} title={"Новое место"} button={"Сохранить"} isOpen={isOpen} onClose={onClosePopupAddPlace} onSubmit={handleSubmit}>
             <input type="text" className="pop-up-form__field" placeholder="Название" id="pop-up-form-newcard-title"
                 name="title" required minLength="2" maxLength="30" autoComplete="off" onChange={handleNameChange} value={name} />
             <span className="pop-up-form__input-error pop-up-form-newcard-title-error"></span>
