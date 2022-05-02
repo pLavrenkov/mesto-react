@@ -6,5 +6,5 @@ export const defaultUser = {
     id: " ",
     name: 'Жак-Ив Кусто',
     about: 'Исследователь океана',
-    avatar: '../images/avatar.jpg'
+    avatar: ''
   }

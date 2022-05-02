@@ -1,13 +1,8 @@
 import React from 'react';
-import EditProfilePopup from './EditProfilePopup';
-import EditAvatarPopup from './EditAvatarPopup';
-import AddPlacePopup from './AddPlacePopup';
-import PopupWithForm from './PopupWithForm';
-import ImagePopup from './ImagePopup';
 import Card from './Card';
 import { CurrentUserContext } from '../contexts/CurrentUserContext';
 
-function Main({ onEditProfile, onAddPlace, onEditAvatar, isOpenProfile, isOpenAvatar, isOpenPlace, closeAllPopups, card, onCardClick, onUpdateUser, isOpenImage, onUpdateAvatar, cards, onCardLike, onCardDelete, newCardAdd }) {
+function Main({ onEditProfile, onAddPlace, onEditAvatar, onCardClick, cards, onCardLike, onCardDelete }) {
     const currentUser = React.useContext(CurrentUserContext);
    
     return (
@@ -42,11 +37,6 @@ function Main({ onEditProfile, onAddPlace, onEditAvatar, isOpenProfile, isOpenAv
                     )}
                 </ul>
             </section>
-            <EditProfilePopup isOpen={isOpenProfile} onClose={closeAllPopups} onUpdateUser={onUpdateUser} />
-            <EditAvatarPopup isOpen={isOpenAvatar} onClose={closeAllPopups} onUpdateAvatar={onUpdateAvatar} />
-            <AddPlacePopup isOpen={isOpenPlace} onClose={closeAllPopups} newCardAdd={newCardAdd} />
-            <PopupWithForm name={"deletecard"} title={"Вы уверены?"} button={"Да"} onClose={closeAllPopups} />
-            <ImagePopup onClose={closeAllPopups} cardAttributes={card} isOpen={isOpenImage} />
         </main>
     )
 }
