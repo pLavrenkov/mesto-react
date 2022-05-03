@@ -46,10 +46,10 @@ function EditProfilePopup({ isOpen, onClose, onUpdateUser }) {
         <PopupWithForm name={"profile"} title={"Редактировать профиль"} button={"Сохранить"} isOpen={isOpen} onClose={onClose} onSubmit={handleSubmit} onBlocked={isButtonBlocked}>
             <input type="text" className={classNameList.input} placeholder="Введите другое имя" id="pop-up-form-profile-title"
                 name="title" required minLength="2" maxLength="40" autoComplete="name" onChange={handleNameChange} value={handleNameValue} />
-            <span className={classNameList.error}>Должно быть не менее 3х символов и не более 20ти</span>
+            <span className={classNameList.error}>{`Должно быть не менее 3х символов и не более 20ти. Сейчас символов: ${name.length}.`}</span>
             <input type="text" className={classDescriptionList.input} placeholder="Введите занятие" id="pop-up-form-profile-added-info"
                 name="info" required minLength="2" maxLength="200" autoComplete="off" onChange={handleDescriptionChange} value={handleAboutValue} />
-            <span className={classDescriptionList.error}>Должно быть не менее 3х символов и не более 40ка</span>
+            <span className={classDescriptionList.error}>{`Должно быть не менее 3х символов и не более 40ка. Сейчас символов: ${description.length}.`}</span>
         </PopupWithForm>
     )
 }
