@@ -4,7 +4,7 @@ import PopupWithForm from "./PopupWithForm";
 import { checkTextValid, classListValidationInput } from "../utils/Validation";
 import { useState, useContext, useEffect } from "react";
 
-function EditProfilePopup({ isOpen, onClose, onUpdateUser }) {
+function EditProfilePopup({ isOpen, onClose, onUpdateUser, onCloseByLayout }) {
     const [name, setName] = useState('');
     const [description, setDescription] = useState('');
     const [isNameValid, setIsNameValid] = useState(true);
@@ -43,7 +43,7 @@ function EditProfilePopup({ isOpen, onClose, onUpdateUser }) {
     }
 
     return (
-        <PopupWithForm name={"profile"} title={"Редактировать профиль"} button={"Сохранить"} isOpen={isOpen} onClose={onClose} onSubmit={handleSubmit} onBlocked={isButtonBlocked}>
+        <PopupWithForm name={"profile"} title={"Редактировать профиль"} button={"Сохранить"} isOpen={isOpen} onClose={onClose} onSubmit={handleSubmit} onBlocked={isButtonBlocked} onCloseByLayout={onCloseByLayout} >
             <input type="text" className={classNameList.input} placeholder="Введите другое имя" id="pop-up-form-profile-title"
                 name="title" required minLength="2" maxLength="40" autoComplete="name" onChange={handleNameChange} value={handleNameValue} />
             <span className={classNameList.error}>{`Должно быть не менее 3х символов и не более 20ти. Сейчас символов: ${name.length}.`}</span>

@@ -4,7 +4,7 @@ import { CurrentUserContext } from "../contexts/CurrentUserContext";
 import { checkUrlValid, classListValidationInput } from "../utils/Validation";
 import { useState, useContext, useEffect } from "react";
 
-function EditAvatarPopup({ isOpen, onClose, onUpdateAvatar }) {
+function EditAvatarPopup({ isOpen, onClose, onUpdateAvatar, onCloseByLayout }) {
     const currentUser = useContext(CurrentUserContext);
     const [avatar, setAvatar] = useState('');
     const [isUrlValid, setIsUrlValid] = useState(true);
@@ -37,7 +37,7 @@ function EditAvatarPopup({ isOpen, onClose, onUpdateAvatar }) {
     const classUrlList = (isUrlValid ? classListValidationInput.valid : classListValidationInput.error);
     
     return (
-        <PopupWithForm name={"avatar-edit"} title={"Обновить аватар"} button={"Сохранить"} isOpen={isOpen} onClose={onCloseAvatarPopup} onSubmit={handleSubmit} onBlocked={isButtonBlocked}>
+        <PopupWithForm name={"avatar-edit"} title={"Обновить аватар"} button={"Сохранить"} isOpen={isOpen} onClose={onCloseAvatarPopup} onSubmit={handleSubmit} onBlocked={isButtonBlocked} onCloseByLayout={onCloseByLayout}>
             <input type="url" className={classUrlList.input} placeholder="Ссылка на картинку" id="pop-up-form-avatar-url"
                 name="info" required autoComplete="url" onChange={handleAvatarChange} value={avatar} />
             <span className={classUrlList.error}>Введите адрес в формате URL</span>

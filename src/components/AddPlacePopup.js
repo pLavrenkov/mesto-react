@@ -3,7 +3,7 @@ import PopupWithForm from "./PopupWithForm";
 import { checkTextValid, checkUrlValid, classListValidationInput } from "../utils/Validation";
 import { useState, useEffect } from "react";
 
-function AddPlacePopup({ isOpen, onClose, newCardAdd }) {
+function AddPlacePopup({ isOpen, onClose, newCardAdd, onCloseByLayout }) {
     const [name, setName] = useState('');
     const [link, setLink] = useState('');
     const [isNameValid, setIsNameValid] = useState(false);
@@ -40,7 +40,7 @@ function AddPlacePopup({ isOpen, onClose, newCardAdd }) {
     const classLinkList = (isLinkValid ? classListValidationInput.valid : classListValidationInput.error);
 
     return (
-        <PopupWithForm name={"newcard"} title={"Новое место"} button={"Сохранить"} isOpen={isOpen} onClose={onClosePopupAddPlace} onSubmit={handleSubmit} onBlocked={isButtonBlocked}>
+        <PopupWithForm name={"newcard"} title={"Новое место"} button={"Сохранить"} isOpen={isOpen} onClose={onClosePopupAddPlace} onSubmit={handleSubmit} onBlocked={isButtonBlocked} onCloseByLayout={onCloseByLayout}>
             <input type="text" className={classNameList.input} placeholder="Название" id="pop-up-form-newcard-title"
                 name="title" required minLength="2" maxLength="30" autoComplete="off" onChange={handleNameChange} value={name} />
             <span className={classNameList.error}>{`Должно быть не менее 3х символов и не более 20ти. Сейчас символов: ${name.length}.`}</span>
