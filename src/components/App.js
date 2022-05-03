@@ -17,6 +17,7 @@ function App() {
   const [isAddPlacePopupOpen, setIsAddPlacePopupOpen] = useState(false);
   const [isEditAvatarPopupOpen, setIsEditAvatarPopupOpen] = useState(false);
   const [isImagePopupOpen, setIsImagePopupOpen] = useState(false);
+  const [isDeleteCardPopupOpen, setIsDeleteCardPopupOpen] = useState(false);
   const [selectedCard, setSelectedCard] = useState({});
 
   useEffect(() => {
@@ -39,6 +40,11 @@ function App() {
 
   function handleAddPlaceClick() {
     setIsAddPlacePopupOpen(true);
+  }
+
+  function handleDeleteCardClick(item) {
+    setIsDeleteCardPopupOpen(true);
+    setSelectedCard(item);
   }
 
   function handleCardClick(name, link) {
@@ -97,15 +103,17 @@ function App() {
       })
   }
 
-  function handleCardDelete(card) {
-    api.deleteCard(card._id)
+  function handleCardDelete(evt) {
+    evt.preventDefault();
+    api.deleteCard(selectedCard._id)
       .then((newCard) => {
         console.log(newCard);
-        setCards((state) => state.filter((c) => c._id !== card._id ? true : false));
+        setCards((state) => state.filter((c) => c._id !== selectedCard._id ? true : false));
       })
       .catch((err) => {
         alert(`Не удалось удалить карточку. Ошибка ${err}`);
       });
+    closeAll();
   }
 
   function handleAddPlaceSubmit(name, link) {
@@ -118,23 +126,34 @@ function App() {
       })
   }
 
-  function closeAllPopups() {
+  function closeAll() {
     setIsAddPlacePopupOpen(false);
     setIsEditAvatarPopupOpen(false);
     setIsEditProfilePopupOpen(false);
     setIsImagePopupOpen(false);
+    setIsDeleteCardPopupOpen(false);
     setSelectedCard({});
+  }
+
+  function closeAllPopups() {
+    closeAll();
   }
 
   function closeAllPopupsByLayout(event) {
     if (event.target.className.includes('pop-up_opened')) {
-      setIsAddPlacePopupOpen(false);
-      setIsEditAvatarPopupOpen(false);
-      setIsEditProfilePopupOpen(false);
-      setIsImagePopupOpen(false);
-      setSelectedCard({});
+      closeAll();
     }
   }
+
+  useEffect(() => {
+    const closeByEsc = (e) => {
+      if (e.key === 'Escape') {
+        closeAll();
+      }
+    }
+    window.addEventListener('keydown', closeByEsc);
+    return () => window.removeEventListener('keydown', closeByEsc);
+  }, []);
 
   return (
     <div className="body">
@@ -150,14 +169,14 @@ function App() {
             onCardClick={handleCardClick}
             cards={cards}
             onCardLike={handleCardLike}
-            onCardDelete={handleCardDelete}
+            onCardDelete={handleDeleteCardClick}
           />
           <Footer />
           <EditProfilePopup isOpen={isEditProfilePopupOpen} onClose={closeAllPopups} onUpdateUser={handleUpdateUser} onCloseByLayout={closeAllPopupsByLayout} />
           <EditAvatarPopup isOpen={isEditAvatarPopupOpen} onClose={closeAllPopups} onUpdateAvatar={handleUpdateAvatar} onCloseByLayout={closeAllPopupsByLayout} />
           <AddPlacePopup isOpen={isAddPlacePopupOpen} onClose={closeAllPopups} newCardAdd={handleAddPlaceSubmit} onCloseByLayout={closeAllPopupsByLayout} />
-          <PopupWithForm name={"deletecard"} title={"Вы уверены?"} button={"Да"} onClose={closeAllPopups} onCloseByLayout={closeAllPopupsByLayout}/>
-          <ImagePopup onClose={closeAllPopups} cardAttributes={selectedCard} isOpen={isImagePopupOpen} onCloseByLayout={closeAllPopupsByLayout}/>
+          <PopupWithForm name={"deletecard"} title={"Вы уверены?"} button={"Да"} isOpen={isDeleteCardPopupOpen} onClose={closeAllPopups} onCloseByLayout={closeAllPopupsByLayout} onSubmit={handleCardDelete} />
+          <ImagePopup onClose={closeAllPopups} cardAttributes={selectedCard} isOpen={isImagePopupOpen} onCloseByLayout={closeAllPopupsByLayout} />
         </CurrentUserContext.Provider>
       </div>
     </div>

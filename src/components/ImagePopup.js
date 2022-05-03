@@ -1,4 +1,4 @@
-function ImagePopup({ onClose, cardAttributes, isOpen, onCloseByLayout }) {
+function ImagePopup({ onClose, cardAttributes, isOpen, onCloseByLayout, }) {
     const cardData = {
         name: '',
         link: ''
@@ -12,7 +12,7 @@ function ImagePopup({ onClose, cardAttributes, isOpen, onCloseByLayout }) {
     const imageClassList = (isOpen ? "pop-up pop-up_opened" : "pop-up");
 
     return (
-        <section className={imageClassList} id="pop-up-image-view" onClick={onCloseByLayout}>
+        <section className={imageClassList} id="pop-up-image-view" onClick={onCloseByLayout} >
             <div className="pop-up__container">
                 <button type="button" className="pop-up__button-close" onClick={onClose} ></button>
                 <figure className="pop-up-picture">
