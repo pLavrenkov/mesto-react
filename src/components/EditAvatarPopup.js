@@ -1,15 +1,16 @@
 import React from "react";
 import PopupWithForm from "./PopupWithForm";
 import { CurrentUserContext } from "../contexts/CurrentUserContext";
+import { checkUrlValid, classListValidationInput } from "../utils/Validation";
+import { useState, useContext, useEffect } from "react";
 
 function EditAvatarPopup({ isOpen, onClose, onUpdateAvatar }) {
-    const currentUser = React.useContext(CurrentUserContext);
-    const [avatar, setAvatar] = React.useState('');
-    //чтобы не использовать отдельную переменную value пришлось удалить предустановленный аватар Кустро
-    //иначе при первом открытии попапа возникал относительный url этого аватара
-    //другое решение - только через отдельную state-переменную или через тенарный оператор для сравнения url (не очень хорошее решение)
+    const currentUser = useContext(CurrentUserContext);
+    const [avatar, setAvatar] = useState('');
+    const [isUrlValid, setIsUrlValid] = useState(true);
+    const [isButtonBlocked, setIsButtonBlocked] = useState(true);
 
-    React.useEffect(() => {
+    useEffect(() => {
         setAvatar(currentUser.avatar);
     }, []);
 
@@ -28,11 +29,18 @@ function EditAvatarPopup({ isOpen, onClose, onUpdateAvatar }) {
         setAvatar('');
     }
 
+    useEffect(() => {
+        setIsUrlValid(checkUrlValid(avatar));
+        (!isUrlValid ? setIsButtonBlocked(true) : setIsButtonBlocked(false));
+    }, [avatar, isUrlValid]);
+
+    const classUrlList = (isUrlValid ? classListValidationInput.valid : classListValidationInput.error);
+    
     return (
-        <PopupWithForm name={"avatar-edit"} title={"Обновить аватар"} button={"Сохранить"} isOpen={isOpen} onClose={onCloseAvatarPopup} onSubmit={handleSubmit}>
-            <input type="url" className="pop-up-form__field" placeholder="Ссылка на картинку" id="pop-up-form-avatar-url"
+        <PopupWithForm name={"avatar-edit"} title={"Обновить аватар"} button={"Сохранить"} isOpen={isOpen} onClose={onCloseAvatarPopup} onSubmit={handleSubmit} onBlocked={isButtonBlocked}>
+            <input type="url" className={classUrlList.input} placeholder="Ссылка на картинку" id="pop-up-form-avatar-url"
                 name="info" required autoComplete="url" onChange={handleAvatarChange} value={avatar} />
-            <span className="pop-up-form__input-error pop-up-form-avatar-url-error"></span>
+            <span className={classUrlList.error}>Введите адрес в формате URL</span>
         </PopupWithForm>
     )
 }

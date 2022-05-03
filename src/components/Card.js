@@ -1,9 +1,10 @@
 import React from "react";
 import ReactDOM from 'react-dom/client';
-import { CurrentUserContext } from '../contexts/CurrentUserContext'
+import { CurrentUserContext } from '../contexts/CurrentUserContext';
+import { useContext } from "react";
 
 function Card({ card, link, name, likes, likesArr, cardOwnerId, onCardClick, onCardLike, onCardDelete}) {
-    const currentUser = React.useContext(CurrentUserContext);
+    const currentUser = useContext(CurrentUserContext);
     
     const isOwnCard = (card.owner._id === currentUser._id);
     const cardDeleteButtonClass = (isOwnCard ? "element__bin-button" : "element__bin-button element__bin-button_display_none");

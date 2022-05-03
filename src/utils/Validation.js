@@ -1,9 +1,18 @@
-export function checkTextValid(input, numMin, numMax) {
-    if (input.length > numMin && input.length < numMax && !input.includes('   ')) { return true } else { return false };
+export function checkTextValid(text, numMin, numMax) {
+    if (text.length > numMin && text.length < numMax && !text.includes('   ')) {
+        return true
+    } else {
+        return false
+    };
 }
 
-export function checkUrlValid(input, numMin, numMax) {
-    if (input.length > numMin && input.length < numMax && !input.includes('   ')) { return true } else { return false };
+export function checkUrlValid(url) {
+    try {
+        new URL(url);
+    } catch {
+        return false;
+    }
+    return true;
 }
 
 export const classListValidationInput = {

@@ -9,16 +9,17 @@ import AddPlacePopup from './AddPlacePopup';
 import PopupWithForm from './PopupWithForm';
 import ImagePopup from './ImagePopup';
 import { api } from '../utils/Api';
+import { useState, useEffect } from "react";
 
 function App() {
-  const [currentUser, setCurrentUser] = React.useState(defaultUser);
-  const [isEditProfilePopupOpen, setIsEditProfilePopupOpen] = React.useState(false);
-  const [isAddPlacePopupOpen, setIsAddPlacePopupOpen] = React.useState(false);
-  const [isEditAvatarPopupOpen, setIsEditAvatarPopupOpen] = React.useState(false);
-  const [isImagePopupOpen, setIsImagePopupOpen] = React.useState(false);
-  const [selectedCard, setSelectedCard] = React.useState({});
+  const [currentUser, setCurrentUser] = useState(defaultUser);
+  const [isEditProfilePopupOpen, setIsEditProfilePopupOpen] = useState(false);
+  const [isAddPlacePopupOpen, setIsAddPlacePopupOpen] = useState(false);
+  const [isEditAvatarPopupOpen, setIsEditAvatarPopupOpen] = useState(false);
+  const [isImagePopupOpen, setIsImagePopupOpen] = useState(false);
+  const [selectedCard, setSelectedCard] = useState({});
 
-  React.useEffect(() => {
+  useEffect(() => {
     api.getUserInfo()
       .then((userInfo) => {
         setCurrentUser(userInfo);
@@ -73,7 +74,7 @@ function App() {
 
   const [cards, setCards] = React.useState([]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     api.getCards()
       .then((arrCards) => {
         setCards(arrCards)

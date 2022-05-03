@@ -1,9 +1,14 @@
 import React from "react";
 import PopupWithForm from "./PopupWithForm";
+import { checkTextValid, checkUrlValid, classListValidationInput } from "../utils/Validation";
+import { useState, useEffect } from "react";
 
 function AddPlacePopup({ isOpen, onClose, newCardAdd }) {
-    const [name, setName] = React.useState('');
-    const [link, setLink] = React.useState('');
+    const [name, setName] = useState('');
+    const [link, setLink] = useState('');
+    const [isNameValid, setIsNameValid] = useState(false);
+    const [isLinkValid, setIsLinkValid] = useState(false);
+    const [isButtonBlocked, setIsButtonBlocked] = useState(true);
 
     function handleNameChange(event) {
         setName(event.target.value);
@@ -25,14 +30,23 @@ function AddPlacePopup({ isOpen, onClose, newCardAdd }) {
         onClosePopupAddPlace();
     }
 
+    useEffect(() => {
+        setIsNameValid(checkTextValid(name, 2, 20));
+        setIsLinkValid(checkUrlValid(link));
+        (!isNameValid || !isLinkValid ? setIsButtonBlocked(true) : setIsButtonBlocked(false));
+    }, [name, link, isNameValid, isLinkValid]);
+
+    const classNameList = (isNameValid ? classListValidationInput.valid : classListValidationInput.error);
+    const classLinkList = (isLinkValid ? classListValidationInput.valid : classListValidationInput.error);
+
     return (
-        <PopupWithForm name={"newcard"} title={"Новое место"} button={"Сохранить"} isOpen={isOpen} onClose={onClosePopupAddPlace} onSubmit={handleSubmit}>
-            <input type="text" className="pop-up-form__field" placeholder="Название" id="pop-up-form-newcard-title"
+        <PopupWithForm name={"newcard"} title={"Новое место"} button={"Сохранить"} isOpen={isOpen} onClose={onClosePopupAddPlace} onSubmit={handleSubmit} onBlocked={isButtonBlocked}>
+            <input type="text" className={classNameList.input} placeholder="Название" id="pop-up-form-newcard-title"
                 name="title" required minLength="2" maxLength="30" autoComplete="off" onChange={handleNameChange} value={name} />
-            <span className="pop-up-form__input-error pop-up-form-newcard-title-error"></span>
-            <input type="url" className="pop-up-form__field" placeholder="Ссылка на картинку"
+            <span className={classNameList.error}>Должно быть не менее 3х символов и не более 20</span>
+            <input type="url" className={classLinkList.input} placeholder="Ссылка на картинку"
                 id="pop-up-form-newcard-added-info" name="info" required autoComplete="url" onChange={handleLinkChange} value={link} />
-            <span className="pop-up-form__input-error pop-up-form-newcard-added-info-error"></span>
+            <span className={classLinkList.error}>Введите адрес в формате URL</span>
         </PopupWithForm>
     )
 }
