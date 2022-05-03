@@ -10,7 +10,6 @@ function EditProfilePopup({ isOpen, onClose, onUpdateUser }) {
     const [isNameValid, setIsNameValid] = useState(true);
     const [isDescriptionValid, setIsDescriptionValid] = useState(true);
     const [isButtonBlocked, setIsButtonBlocked] = useState(false);
-
     const currentUser = useContext(CurrentUserContext);
 
     useEffect(() => {
@@ -30,8 +29,8 @@ function EditProfilePopup({ isOpen, onClose, onUpdateUser }) {
     const handleAboutValue = (isOpen ? description : '');
 
     useEffect(() => {
-        setIsNameValid(checkTextValid(name, 2, 20));
-        setIsDescriptionValid(checkTextValid(description, 2, 40));
+        setIsNameValid(checkTextValid(name, 2, 21));
+        setIsDescriptionValid(checkTextValid(description, 2, 41));
         (!isNameValid || !isDescriptionValid ? setIsButtonBlocked(true) : setIsButtonBlocked(false));
     }, [name, description, isNameValid, isDescriptionValid]);
 
@@ -47,10 +46,10 @@ function EditProfilePopup({ isOpen, onClose, onUpdateUser }) {
         <PopupWithForm name={"profile"} title={"Редактировать профиль"} button={"Сохранить"} isOpen={isOpen} onClose={onClose} onSubmit={handleSubmit} onBlocked={isButtonBlocked}>
             <input type="text" className={classNameList.input} placeholder="Введите другое имя" id="pop-up-form-profile-title"
                 name="title" required minLength="2" maxLength="40" autoComplete="name" onChange={handleNameChange} value={handleNameValue} />
-            <span className={classNameList.error}>Должно быть не менее 3х символов и не более 20</span>
+            <span className={classNameList.error}>Должно быть не менее 3х символов и не более 20ти</span>
             <input type="text" className={classDescriptionList.input} placeholder="Введите занятие" id="pop-up-form-profile-added-info"
                 name="info" required minLength="2" maxLength="200" autoComplete="off" onChange={handleDescriptionChange} value={handleAboutValue} />
-            <span className={classDescriptionList.error}>Должно быть не менее 3х символов и не более 40</span>
+            <span className={classDescriptionList.error}>Должно быть не менее 3х символов и не более 40ка</span>
         </PopupWithForm>
     )
 }

@@ -31,7 +31,7 @@ function AddPlacePopup({ isOpen, onClose, newCardAdd }) {
     }
 
     useEffect(() => {
-        setIsNameValid(checkTextValid(name, 2, 20));
+        setIsNameValid(checkTextValid(name, 2, 21));
         setIsLinkValid(checkUrlValid(link));
         (!isNameValid || !isLinkValid ? setIsButtonBlocked(true) : setIsButtonBlocked(false));
     }, [name, link, isNameValid, isLinkValid]);
@@ -43,7 +43,7 @@ function AddPlacePopup({ isOpen, onClose, newCardAdd }) {
         <PopupWithForm name={"newcard"} title={"Новое место"} button={"Сохранить"} isOpen={isOpen} onClose={onClosePopupAddPlace} onSubmit={handleSubmit} onBlocked={isButtonBlocked}>
             <input type="text" className={classNameList.input} placeholder="Название" id="pop-up-form-newcard-title"
                 name="title" required minLength="2" maxLength="30" autoComplete="off" onChange={handleNameChange} value={name} />
-            <span className={classNameList.error}>Должно быть не менее 3х символов и не более 20</span>
+            <span className={classNameList.error}>Должно быть не менее 3х символов и не более 20ти</span>
             <input type="url" className={classLinkList.input} placeholder="Ссылка на картинку"
                 id="pop-up-form-newcard-added-info" name="info" required autoComplete="url" onChange={handleLinkChange} value={link} />
             <span className={classLinkList.error}>Введите адрес в формате URL</span>
